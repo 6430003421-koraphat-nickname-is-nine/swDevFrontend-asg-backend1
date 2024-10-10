@@ -33,8 +33,8 @@ const limiter = rateLimit({
 app.use(limiter);
 app.use(hpp());
 app.use(cookieParser());
-app.use('*.css', (req, res, next) => {
-  res.set('Content-Type', 'text/css');
+app.use("*.css", (req, res, next) => {
+  res.set("Content-Type", "text/css");
   next();
 });
 app.use("/api/v1/hospitals", hospitals);
@@ -51,24 +51,31 @@ const server = app.listen(
   )
 );
 
-const swaggerOptions={
-  swaggerDefinition:{
-    openapi: '3.0.0',
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: "3.0.0",
     info: {
-    title: 'Library API',
-    version: '1.0.0',
-    description: 'Hospital Booking API'
+      title: "Library API",
+      version: "1.0.0",
+      description: "Hospital Booking API",
     },
     servers: [
       {
-        url: process.env.HOST + ':' + PORT + '/api/v1'
-      }
+        url: process.env.HOST + ":" + PORT + "/api/v1",
+      },
     ],
   },
-  apis:['./routes/*.js'],
+  apis: ["./routes/*.js"],
 };
-const swaggerDocs=swaggerJsDoc(swaggerOptions);
-app.use('/api-docs',swaggerUI.serve, swaggerUI.setup(swaggerDocs));
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+const CSS_URL =
+  "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css";
+// app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
+app.use(
+  "/api-docs",
+  swaggerUI.serve,
+  swaggerUI.setup(swaggerDocs, { customCssUrl: CSS_URL })
+);
 
 // Handle unhandled promise rejections
 process.on("unhandledRejection", (err, promise) => {
